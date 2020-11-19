@@ -16,17 +16,22 @@
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="card">
-                        <div class="card-header">Example Component</div>
+                        <div class="card-header text-center">Full Stack Developer Challenge</div>
     
                         <div class="card-body">
                             
                             <form id="frm_input" method="POST">
 
-                                <input type="text" name="txt_num" id="txt_num">
+                                <div class="form-group">
+                                    <label for="txt_num">Enter Number : </label>
+                                    <input class="form-control" type="text" name="txt_num" id="txt_num" placeholder="Enter prime number">
+                                </div>
 
-                                <input type="submit" value="Click" name="btn_click">
+                                <input class="btn btn-success" type="submit" value="Click me" name="btn_click">
 
                             </form>
+
+                            <div id="result"></div>
 
                         </div>
                     </div>
@@ -46,6 +51,8 @@
 
                     event.preventDefault();
                     let txt_num = $('#txt_num').val();
+                    let result = $('#result');
+                    let string = "";
 
                     $.ajax({
                         url: "/primeNumbers",
@@ -56,6 +63,40 @@
                         },
                         success: function(response){
                             console.log(response);
+
+                            if(response.status == 'error'){
+
+                                result.addClass("mt-3");
+                                string = "<h3 class='alert alert-danger'>"+ response.message +"</h3>";
+                                result.html(string);
+
+                            }else{
+                                result.addClass("mt-4");
+                                string = "<div class='alert alert-info'><h4 class='alert alert-heading text-center'>Result : </h4>";
+                                string += "<h6>The set of prime numbers less than " + txt_num + " is : [ ";
+                                for (let index = 0; index < response.prime.length; index++) {
+                                    
+                                    string += response.prime[index];
+                                    if(index !== response.prime.length -1)
+                                        string += ", ";
+                                    
+                                }
+                                string += " ] </h6>";
+                                if(response.median.length > 1){
+                                    string += "<h6>The Meadians are : [ ";
+                                }else{
+                                    string += "<h6>The Meadian is : [ ";
+                                }
+                                for (let index = 0; index < response.median.length; index++) {
+                                    
+                                    string += response.median[index];
+                                    if(index !== response.median.length -1)
+                                        string += ", ";
+                                    
+                                }
+                                string += " ]</h6></div>";
+                                result.html(string);
+                            }
                         },
                         error: function(response){
                             console.log(response);
